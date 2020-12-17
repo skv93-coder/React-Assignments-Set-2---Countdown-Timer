@@ -24,7 +24,9 @@ const App = () => {
     }
   };
   useEffect(() => {
-    setTimeout(tick, 1000);
+    if (Number(value)) {
+      setTimeout(tick, 1000);
+    }
     return () => {
       clearTimeout();
     };

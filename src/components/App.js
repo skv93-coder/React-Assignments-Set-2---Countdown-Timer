@@ -1,45 +1,46 @@
-import React, { Component, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import "../styles/App.css";
 
 const App = () => {
-  // write your code here
-  const [value, setvalue] = useState("");
-  const [curTime, setcurrTime] = useState("");
-  const handle = (ev) => {
-    setvalue(ev.target.value);
-    const input = Number(ev.target.value, 10);
-    console.log(input);
-    if (input) {
-      setcurrTime(input);
-
-      // console.log(input);
-    } else {
-      setcurrTime(0);
+  const [counter, setCounter] = useState("");
+  const [controller, setController] = useState(false);
+  const handleKeyDown = (event) => {
+    if (event.keyCode === 13) {
+      const value = event.target.value;
+      if (isNaN(value)) {
+        setCounter(0);
+        return;
+      }
+      setCounter(Math.floor(value));
+      setController(true);
     }
   };
-  const tick = () => {
-    if (curTime) {
-      setcurrTime(curTime - 1);
-      //   console.log(1);
+  const handleInterval = () => {
+    if (!controller || counter === 0) {
+      return;
     }
+    let newCounter = counter - 1;
+    setCounter(newCounter);
   };
   useEffect(() => {
-    if (Number(value)) {
-      setTimeout(tick, 1000);
-    }
+    const id = setInterval(handleInterval, 1000);
     return () => {
-      clearTimeout();
+      clearInterval(id);
     };
-  }, [curTime]);
+  });
   return (
     <div className="wrapper">
       <div id="whole-center">
         <h1>
           Reverse countdown for
-          <input id="timeCount" value={value} onChange={handle} /> sec.
+          <input
+            id="timeCount"
+            onKeyDown={(event) => handleKeyDown(event)}
+          />{" "}
+          sec.
         </h1>
       </div>
-      <div id="current-time">{curTime}</div>
+      <div id="current-time">{counter}</div>
     </div>
   );
 };
